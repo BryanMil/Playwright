@@ -1,0 +1,31 @@
+import re
+from playwright.sync_api import Playwright, sync_playwright, expect
+
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("https://www.lkqpickyourpart.com/")
+    page.get_by_role("button", name="Accept All Cookies").click()
+    page.get_by_role("link", name="FIND YOUR PARTS", exact=True).click()
+    page.get_by_label("Choose Your Location").select_option("Austin")
+    page.get_by_label("Year").select_option("2014")
+    page.get_by_label("Make").select_option("TOYOTA")
+    page.get_by_label("Model").select_option("CAMRY")
+    page.get_by_placeholder("Please Select a Part Type").click()
+    page.get_by_text("DOOR, REAR", exact=True).click()
+    page.get_by_label("Part Detail").select_option("(ELECTRIC WINDOWS), R.")
+    page.get_by_role("button", name="Search").click()
+
+    print("Browser is open. Press Enter to close it.")
+    input()  # Wait for user input before closing the browser
+
+
+    # ---------------------
+    context.close()
+    browser.close()
+
+
+with sync_playwright() as playwright:
+    run(playwright)
